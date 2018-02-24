@@ -56,3 +56,21 @@ form {
 .readingList {
     // border: rgb(218, 160, 0) 1px solid;
 }
+
+.loginModal, .createUserModal, .splashScreen {
+    display: none;
+}
+
+.loginModal.show, .createUserModal.show, .splashScreen.show {
+    display: block;
+}
+.splashScreen {
+    width: 100vw;
+    height: 50vw;
+    margin-top: $headerHeight;
+}
+.btn {
+    min-width: 100px;
+    padding: 14px 20px;
+    background: $light-gray;
+}
