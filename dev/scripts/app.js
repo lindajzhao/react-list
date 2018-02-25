@@ -19,8 +19,10 @@ class App extends React.Component {
     this.state = {
       urlInput: '',
       titleInput: '',
+      tagInput: '',
       articles: [],
-      loggedIn: false
+      loggedIn: '',
+      userId: '',
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -33,12 +35,15 @@ class App extends React.Component {
     this.showLogin = this.showLogin.bind(this);
     this.loginUser = this.loginUser.bind(this);
     this.signOut = this.signOut.bind(this);
+    this.showReadingList = this.showReadingList.bind(this);
+    this.showSplash = this.showSplash.bind(this);
     }
 
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if(user) {
-        const dbRef = firebase.database().ref('/articles');
+        const userId = user.uid;
+        const dbRef = firebase.database().ref(`/users/${user.uid}`);
         dbRef.on('value', (response) => {
           // console.log(response.val())
           const data = response.val();
@@ -58,6 +63,8 @@ class App extends React.Component {
     
           this.setState ({
             articles: newState,
+            loggedIn: true,
+            userId: userId,
           });
         // there is a user logged in
         })
@@ -79,29 +86,38 @@ class App extends React.Component {
       <header className="mainHeader">
         <h1>Pocky</h1>
         <nav>
-            <a href="#" className="link--nav btn" onClick={this.showLogin}>Log In</a>
-            <a href="#" className="link--nav btn" onClick={this.showCreate}>Create Account</a>
-            <a href="#" className="link--nav btn" onClick={this.signOut}>Sign Out</a>
+          {this.state.loggedIn ? 
+          <span>
+            <span>Logged In</span>
+            <a href="#" className="link--nav" onClick={this.signOut}>Sign Out</a>
+          </span>
+          : <span>
+            <a href="#" className="link--nav" onClick={this.showLogin}>Log In</a> 
+            <a href="#" className="link--nav" onClick={this.showCreate}>Create Account</a>
+          </span> 
+          }
         </nav>
       </header>
-        <div className="modal loginModal" ref={ref => this.loginModal = ref}>
-          <h2>Log In Form</h2>
-          <a onClick={this.showLogin}><i className="fas fa-times close"></i></a>
-          <form action="" onSubmit={this.loginUser}>
-            <div>
-              <label htmlFor="userEmail">Email: </label>
-              <input type="email" name="userEmail" ref={ref => this.userEmail = ref} />
-            </div>
-            <div>
-              <label htmlFor="userPassword">Password: </label>
-              <input type="password" name="userPassword" ref={ref => this.userPassword = ref} />
-            </div>
 
-            <div>
-              <input type="submit" value='Log In' onSubmit={this.showCreate} />
-            </div>
-          </form>
-        </div>
+    
+      <div className="modal loginModal" ref={ref => this.loginModal = ref}>
+        <h2>Log In Form</h2>
+        <a onClick={this.showLogin}><i className="fas fa-times close"></i></a>
+        <form action="" onSubmit={this.loginUser}>
+          <div>
+            <label htmlFor="userEmail">Email: </label>
+            <input type="email" name="userEmail" ref={ref => this.userEmail = ref} />
+          </div>
+          <div>
+            <label htmlFor="userPassword">Password: </label>
+            <input type="password" name="userPassword" ref={ref => this.userPassword = ref} />
+          </div>
+
+          <div>
+            <input type="submit" value='Log In' onSubmit={this.showCreate} />
+          </div>
+        </form>
+      </div>
 
       <div className="modal createUserModal" ref={ref => this.createUserModal = ref}>
           <h2>Create An Account</h2>
@@ -125,45 +141,60 @@ class App extends React.Component {
           </form>
       </div>
 
-      <div className="splashScreen">
-        <h2>Save blog posts you want to read for later with Pocky!</h2>
-        <h3>Please sign in to use the app</h3>
-      
-      </div>
+      <main>
+        {this.showSplash()}
+      </main>
 
-      <main className="inputForm">
-         <div className='wrapper'>
-            <p>PROJECT 5!</p>
+
+      <footer>
+        <div className='wrapper'>Created By Linda Zhao using React and Firebase</div>
+      </footer>
+    </div>
+    
+    );
+  }
+
+  showSplash() {
+    if(this.state.loggedIn) {
+      return (
+        <div className="wrapper">
+          <div className='inputForm'>
             <h2>Add An Article</h2>
             <form onSubmit={this.handleSubmit}>
               <label htmlFor="urlInput">URL: </label>
               <input name="urlInput" onChange={this.handleChange} type="url" id="urlInput" value={this.state.urlInput} required />
-    
+
               <label htmlFor="titleInput">Title: </label>
               <input name="titleInput" onChange={this.handleChange} type="text" id="titleInput" value={this.state.titleInput} />
               <input onClick={this.handleSubmit} type="submit" value="hit it!" />
             </form>
-  
-            <ReadingList data={this.state.articles} removeArticle={this.removeArticle} toggleSaved={this.toggleSaved} toggleCompleted={this.toggleCompleted}/>
-  
+            {this.showReadingList()}
             <Sidebar />
-         </div>
-  
-      </main>
+          </div>
+        </div>
+      );
+    } else {
+      return (<div className="splashScreen">
+        <h2>Save blog posts you want to read for later with Pocky!</h2>
+      </div>);
+    }
 
-      <footer>
-        Created By Linda Zhao using React and Firebase
-      </footer>
-    </div>
-    
-  );
+  }
+
+  showReadingList() {
+    if(this.state.loggedIn) {
+      return (<ReadingList data={this.state.articles} removeArticle={this.removeArticle} toggleSaved={this.toggleSaved} toggleCompleted={this.toggleCompleted} />)
+    } else if(this.state.loggedIn === false){
+      return <h3>Please log in to see notes!</h3>
+    } 
   }
 
   signOut() {
     firebase.auth().signOut();
     this.setState({
       articles: [],
-      loggedIn: false
+      loggedIn: false.loggedIn,
+      userId: '',
     })
   }
 
@@ -214,7 +245,6 @@ class App extends React.Component {
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
         this.showLogin(e);
-        alert('you are signed in!')
 
       })
       .catch((err) => {
@@ -240,6 +270,7 @@ class App extends React.Component {
     const entry = { 
       url : this.state.urlInput, 
       title : this.state.titleInput, 
+      tags: this.state.tagInput,
       completed: false,
       saved: false
     }
@@ -252,7 +283,7 @@ class App extends React.Component {
       articles: newState
     });
     // push entry object with url, title, complete to firebase now
-    const dbref = firebase.database().ref("/articles");
+    const dbref = firebase.database().ref(`/users/${this.state.userId}`);
     dbref.push(entry);
 
   }
@@ -265,7 +296,7 @@ class App extends React.Component {
     const currKey = articleToUpdate.key;
     // use firebase .set() method to change 1 value. changed ref as well to be inside an object
     // console.log(currKey)
-    const dbref = firebase.database().ref(`/articles/${currKey}`);
+    const dbref = firebase.database().ref(`/users/${this.state.userId}/${currKey}`);
     // console.log(dbref);
     articleToUpdate.saved = articleToUpdate.saved === true ? false : true;
     // console.log(articleToUpdate.saved);
@@ -280,9 +311,21 @@ class App extends React.Component {
 
   }
 
-  toggleCompleted(currItem) {
-    console.log('clicked toggle completed', currItem);
-    // console.log
+  toggleCompleted(articleToUpdate) {
+    console.log('clicked toggle completed');
+    const currKey = articleToUpdate.key;
+
+    const dbref = firebase.database().ref(`/users/${this.state.userId}/${currKey}`);
+    // console.log(dbref);
+    articleToUpdate.completed = articleToUpdate.completed === true ? false : true;
+
+    if (articleToUpdate.key) {
+      console.log("deleting key");
+      delete articleToUpdate.key;
+    }
+    delete articleToUpdate.key;
+    dbref.set(articleToUpdate);
+
 
   }
 
@@ -295,9 +338,8 @@ class App extends React.Component {
     })
 
     // remove item with the id from firebase
-    const dbRef = firebase.database().ref(`articles/${currKey}`);
+    const dbRef = firebase.database().ref(`/users/${this.state.userId}/${currKey}`);
     dbRef.remove();
-
   }
 }
 
@@ -308,13 +350,14 @@ class ReadingList extends React.Component {
         <h2>Reading List</h2>
         {/* iterate with map to show all articles */}
         {this.props.data.map((article) => {
-          return <li key={article.key}>
-            <button onClick={() => this.props.toggleSaved(article)}><i className="fas fa-star"></i></button>
-            <button onClick={() => this.props.toggleCompleted(article)}>Done!
-            </button>
-            <a href={article.url}>{article.title}</a>
-            <button onClick={() => this.props.removeArticle(article.key)}>Remove
-            </button>
+          return <li className="articleItem" key={article.key}>
+            <div className="articleItem__buttons">
+              <button className="btn--toggle" onClick={() => this.props.toggleSaved(article)}><i className="fas fa-star"></i></button>
+              <button className="btn--toggle" onClick={() => this.props.toggleCompleted(article)}><i class="fas fa-check"></i></button>
+            </div>
+            <a className="title__article" href={article.url}>{article.title}</a>
+            <a href="" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove
+            </a>
             {article.saved ? <i className="fas fa-star saved"></i> : null }
             
           </li>;
@@ -327,11 +370,10 @@ class ReadingList extends React.Component {
 class Sidebar extends React.Component {
   render() {
     return (
-      <div>Tag List</div>
+      <h2>Tag List</h2>
     )
   }
 }
-
 
 class Page extends React.Component {
   constructor(props) {

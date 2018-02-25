@@ -28,3 +28,32 @@ a {
 li {
     list-style-type: none;
 }
+
+// ------------
+
+h2 {
+    margin: 50px 0 20px 0;
+    // padding-top: 20px;
+}
+
+.link {
+    &__secondary {
+        color: $text-gray;
+
+        &:visited {
+            color: $text-gray;
+        }
+    }
+
+    &--nav {
+        color: white;
+        padding: 10px 15px;
+    }
+}
+
+.title {
+    &__article {
+        font-size: 1.6rem;
+        margin-left: 10px;
+    }
+}

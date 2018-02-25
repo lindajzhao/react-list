@@ -43,19 +43,50 @@ img {
     width: 100%;
 }
 
-// FORM
+main {
+    min-height: 100vh;
+}
+/*----------------------------------------
+   Header
+----------------------------------------*/
+.mainHeader {
+    min-height: $headerHeight;
+    display: flex;
+    justify-content: space-between;
+    background: $color-main;
+    padding: 5px 20px;
+    align-items: center;
+}
+
+
+/*----------------------------------------
+   Footer
+----------------------------------------*/
+footer {
+    // position: fixed;
+    // bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    background: $color-ac1;
+}
+
+/*----------------------------------------
+   FORM
+----------------------------------------*/
+form {
+    display: grid;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+/*----------------------------------------
+    new note form (.inputForm)
+----------------------------------------*/
 .inputForm {
     // @include flexCenter(column);
-
 }
 
-form {
-    // border: red 1px solid;
-}
-
-.readingList {
-    // border: rgb(218, 160, 0) 1px solid;
-}
 
 .loginModal, .createUserModal, .splashScreen {
     display: none;
@@ -73,4 +104,60 @@ form {
     min-width: 100px;
     padding: 14px 20px;
     background: $light-gray;
+}
+
+/*----------------------------------------
+    .readingList
+----------------------------------------*/
+.readingList {
+    margin-bottom: 50px;
+}
+
+.articleItem {
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin: 5px 0;
+
+    &.saved {
+        background: rgb(255, 255, 244);
+    }
+
+    &.read {
+        .title__article {
+            color: $text-gray;
+        }
+    }
+
+}
+
+.link__delete {
+    position: absolute;
+    right: 0;
+}
+
+/*----------------------------------------
+    all sections
+----------------------------------------*/
+
+
+
+
+/*----------------------------------------
+    all sections
+----------------------------------------*/
+
+button {
+    border: none;
+    background: $color-gray;
+    border-radius: 50%;
+    padding: 5px;
+
+    &.saved {
+        background: $color-ac2;
+    }
+
+    &.read {
+        background: $color-ac1;
+    }
 }
