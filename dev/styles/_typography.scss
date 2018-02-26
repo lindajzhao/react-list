@@ -54,6 +54,15 @@ h2 {
 .title {
     &__article {
         font-size: 1.6rem;
-        margin-left: 10px;
+        // margin-left: 10px;
+    }
+}
+
+.tagName {
+    margin: 0 5px;
+    color: $text-gray;
+
+    &:first-of-type {
+        margin: 0;
     }
 }

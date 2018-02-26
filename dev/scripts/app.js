@@ -19,7 +19,7 @@ class App extends React.Component {
     this.state = {
       urlInput: '',
       titleInput: '',
-      tagInput: '',
+      tagsInput: '',
       articles: [],
       loggedIn: '',
       userId: '',
@@ -144,7 +144,8 @@ class App extends React.Component {
       <main>
         {this.showSplash()}
       </main>
-
+      
+      {this.state.loggedIn ? <Sidebar data={this.state.articles}/> : null}
 
       <footer>
         <div className='wrapper'>Created By Linda Zhao using React and Firebase</div>
@@ -156,7 +157,9 @@ class App extends React.Component {
 
   showSplash() {
     if(this.state.loggedIn) {
+      // console.log('user is logged in')
       return (
+        // show input form if user is logged in
         <div className="wrapper">
           <div className='inputForm'>
             <h2>Add An Article</h2>
@@ -166,24 +169,27 @@ class App extends React.Component {
 
               <label htmlFor="titleInput">Title: </label>
               <input name="titleInput" onChange={this.handleChange} type="text" id="titleInput" value={this.state.titleInput} />
+
+              <label htmlFor="tagsInput">Tags: </label>
+              <input name="tagsInput" onChange={this.handleChange} type="text" id="tagsInput" value={this.state.tagsInput} />
+
               <input onClick={this.handleSubmit} type="submit" value="hit it!" />
             </form>
             {this.showReadingList()}
-            <Sidebar />
+
           </div>
         </div>
       );
     } else {
-      return (<div className="splashScreen">
-        <h2>Save blog posts you want to read for later with Pocky!</h2>
-      </div>);
+      console.log('user is NOT logged in, show splash');
+      return <SplashPage />
     }
 
   }
 
   showReadingList() {
     if(this.state.loggedIn) {
-      return (<ReadingList data={this.state.articles} removeArticle={this.removeArticle} toggleSaved={this.toggleSaved} toggleCompleted={this.toggleCompleted} />)
+      return (<ReadingList data={this.state.articles} removeArticle={this.removeArticle} toggleSaved={this.toggleSaved} toggleCompleted={this.toggleCompleted} getTagKeys={this.getTagKeys}/>)
     } else if(this.state.loggedIn === false){
       return <h3>Please log in to see notes!</h3>
     } 
@@ -267,10 +273,25 @@ class App extends React.Component {
     // new object!
     const newState = Array.from(this.state.articles);
 
-    const entry = { 
-      url : this.state.urlInput, 
-      title : this.state.titleInput, 
-      tags: this.state.tagInput,
+   
+    // save tagsArray in state
+    console.log(this.state.tagsInput);
+    var re = /\s*,\s*/;
+    const tagsArray = this.state.tagsInput.split(re);
+
+    console.log(tagsArray);
+
+    // https://stackoverflow.com/questions/41827019/javascript-whats-the-best-way-convert-array-into-object
+    const tagsObj = tagsArray.reduce(function (obj, v) {
+      obj[v] = 0;
+      return obj;
+    }, {});
+
+    console.log(tagsObj);
+    const entry = {
+      url: this.state.urlInput,
+      title: this.state.titleInput,
+      tags: tagsObj,
       completed: false,
       saved: false
     }
@@ -280,8 +301,10 @@ class App extends React.Component {
     this.setState({
       urlInput: '',
       titleInput: '',
-      articles: newState
+      tagsInput: '',
+      articles: newState,
     });
+
     // push entry object with url, title, complete to firebase now
     const dbref = firebase.database().ref(`/users/${this.state.userId}`);
     dbref.push(entry);
@@ -303,7 +326,6 @@ class App extends React.Component {
     // don't put .key into firebase
     // BUG if statement still runs
     if (articleToUpdate.key) {
-      console.log("deleting key");
       delete articleToUpdate.key;
     }
     delete articleToUpdate.key;
@@ -325,8 +347,6 @@ class App extends React.Component {
     }
     delete articleToUpdate.key;
     dbref.set(articleToUpdate);
-
-
   }
 
   removeArticle(currKey) {
@@ -341,6 +361,20 @@ class App extends React.Component {
     const dbRef = firebase.database().ref(`/users/${this.state.userId}/${currKey}`);
     dbRef.remove();
   }
+
+  getTagKeys(article) {
+    const tagsArr = [];
+
+    for (let tag in article.tags) {
+      tagsArr.push(tag);
+    }
+
+    return tagsArr.map((tag, i) => {
+      // console.log(tag)
+      return <span className="tagName" key={i}>{tag}</span>;
+    })
+
+  }
 }
 
 class ReadingList extends React.Component {
@@ -350,12 +384,17 @@ class ReadingList extends React.Component {
         <h2>Reading List</h2>
         {/* iterate with map to show all articles */}
         {this.props.data.map((article) => {
+          // console.log(Array.from(article.tags));
           return <li className="articleItem" key={article.key}>
             <div className="articleItem__buttons">
               <button className="btn--toggle" onClick={() => this.props.toggleSaved(article)}><i className="fas fa-star"></i></button>
-              <button className="btn--toggle" onClick={() => this.props.toggleCompleted(article)}><i class="fas fa-check"></i></button>
+              <button className="btn--toggle" onClick={() => this.props.toggleCompleted(article)}><i className="fas fa-check"></i></button>
             </div>
-            <a className="title__article" href={article.url}>{article.title}</a>
+
+            <div className="title__box">
+              <a className="title__article" href={article.url}>{article.title}</a>
+              <p className="tagBox">{article.tags ? this.props.getTagKeys(article) : "no tags"}</p>
+            </div>
             <a href="" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove
             </a>
             {article.saved ? <i className="fas fa-star saved"></i> : null }
@@ -366,32 +405,57 @@ class ReadingList extends React.Component {
     )
   }
 }
+// const Tag = (articles) => {
+//   return (
+//     console.log(articles)
+//     {for (let article in articles) {
+//       console.log(article);
+//     }}
+//   )
 
+// }
 class Sidebar extends React.Component {
-  render() {
-    return (
-      <h2>Tag List</h2>
-    )
-  }
-}
-
-class Page extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      inputUrl: "",
-      inputTitle: ""
-    };
-    // this.updateForm = this.updateForm.bind(this);
+      articles: this.props.data,
+    }
+    this.findTagName = this.findTagName.bind(this);
   }
-  render() {
+  render () {
     return (
-      <div>
-        <App />
+      <aside>
+        <div className="wrapper">
+          <h2>Tag List</h2>          
+          {this.findTagName()}
+        </div>
+      </aside>
+    )
+  }
 
-      </div>)
+  findTagName() {
+    const articles = this.state.articles;
+    const allTags =[];
+    articles.map((articleObj) => {
+      // console.log(articleObj.tags);
+      for(let tags in articleObj.tags) {
+        allTags.push(tags)
+      }
+    })
+
+    console.log(allTags)
+    return <p className="tagBox">{allTags}</p>
   }
 }
 
-ReactDOM.render(<Page />, document.getElementById('app'));
+
+// ? Not rendering
+const SplashPage = () => {
+  return (
+    <div className="splashScreen">
+      <h2>Save blog posts you want to read for later with Pocky!</h2>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('app'));
