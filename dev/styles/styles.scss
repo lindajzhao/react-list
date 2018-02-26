@@ -43,9 +43,6 @@ img {
     width: 100%;
 }
 
-main {
-    min-height: 100vh;
-}
 /*----------------------------------------
    Header
 ----------------------------------------*/
@@ -56,7 +53,56 @@ main {
     background: $color-main;
     padding: 5px 20px;
     align-items: center;
+    color: white;
+    margin-bottom: 50px;
 }
+/*----------------------------------------
+  Layout
+----------------------------------------*/
+.mainLayout {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    > * {
+        @include sectionBorder;
+        padding-top: 50px;
+        &:last-child {
+            border-left: none;
+        }
+    }
+}
+
+.layout__spaceBetween {
+    display: flex;
+    justify-content: space-between;
+}
+
+main, aside {
+    border-top: 5px solid $color-main;
+    border-bottom: 5px solid $color-main;
+}
+/*----------------------------------------
+  Splash
+----------------------------------------*/
+
+.splashScreen {
+    width: 100vw;
+    // height: 50vw;
+    margin-top: $headerHeight;
+    .wrapper {
+        // @include sectionBorder;
+        padding-bottom: 50px;
+        @include flexCenter(column);
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    img {
+        width: 400px;
+    }
+}
+
 
 
 /*----------------------------------------
@@ -67,26 +113,54 @@ footer {
     // bottom: 0;
     width: 100%;
     padding: 10px 0;
-    background: $color-ac1;
+    background: $color-main;
+    color: white;
+    margin-top: 50px;
 }
 
 /*----------------------------------------
    FORM
 ----------------------------------------*/
 form {
-    display: grid;
+    display: flex;
     flex-flow: column nowrap;
-    align-items: flex-start;
-    justify-content: flex-start;
+
+    width: 100;
 }
 
+.fieldset {
+    padding: 0;
+    @include sectionBorder;
+    display: flex;
+
+}
+
+label {
+    border-right: 5px solid $color-main;
+    padding: 5px 10px;
+    min-width: 170px;
+}
+
+input:not([type="submit"]) {
+    width: 100%;
+}
+
+input[type="submit"] {
+    margin-top: 50px;
+    border: 5px solid $color-main;
+    padding: 5px 15px;
+}
 /*----------------------------------------
     new note form (.inputForm)
 ----------------------------------------*/
 .inputForm {
-    // @include flexCenter(column);
+    // padding-bottom: 50px;
+
 }
 
+.last {
+    border-bottom: 5px solid $color-main;
+}
 
 .loginModal, .createUserModal, {
     display: none;
@@ -96,22 +170,24 @@ form {
     display: block;
 }
 
-.splashScreen {
-    width: 100vw;
-    height: 50vw;
-    margin-top: $headerHeight;
-}
+
 .btn {
     min-width: 100px;
     padding: 14px 20px;
     background: $light-gray;
 }
 
+.modal {
+    padding: 50px 0;
+    border: 3px solid $color-main;
+}
 /*----------------------------------------
     .readingList
 ----------------------------------------*/
 .readingList {
-    margin-bottom: 50px;
+    margin: 50px 0;
+    border-top: 5px solid $color-main;
+    padding-top: 50px;
 }
 
 .articleItem {

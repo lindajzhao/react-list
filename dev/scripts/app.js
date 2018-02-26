@@ -89,11 +89,11 @@ class App extends React.Component {
           {this.state.loggedIn ? 
           <span>
             <span>Logged In</span>
-            <a href="#" className="link--nav" onClick={this.signOut}>Sign Out</a>
+            <a href="#" className="link--nav link--btn" onClick={this.signOut}>Sign Out</a>
           </span>
           : <span>
-            <a href="#" className="link--nav" onClick={this.showLogin}>Log In</a> 
-            <a href="#" className="link--nav" onClick={this.showCreate}>Create Account</a>
+            <a href="#" className="link--nav link--btn" onClick={this.showLogin}>Log In</a> 
+            <a href="#" className="link--nav link--btn" onClick={this.showCreate}>Create Account</a>
           </span> 
           }
         </nav>
@@ -101,52 +101,62 @@ class App extends React.Component {
 
     
       <div className="modal loginModal" ref={ref => this.loginModal = ref}>
-        <h2>Log In Form</h2>
-        <a onClick={this.showLogin}><i className="fas fa-times close"></i></a>
-        <form action="" onSubmit={this.loginUser}>
-          <div>
-            <label htmlFor="userEmail">Email: </label>
-            <input type="email" name="userEmail" ref={ref => this.userEmail = ref} />
+        <div className="wrapper">
+          <div className="layout__spaceBetween">
+            <h2>Log In Form</h2>
+            <a href="#" onClick={this.showLogin}><i className="fas fa-times close"></i></a>
           </div>
-          <div>
-            <label htmlFor="userPassword">Password: </label>
-            <input type="password" name="userPassword" ref={ref => this.userPassword = ref} />
-          </div>
-
-          <div>
-            <input type="submit" value='Log In' onSubmit={this.showCreate} />
-          </div>
-        </form>
+          <form action="" onSubmit={this.loginUser} className="loginForm">
+            <div className="fieldset">
+              <label htmlFor="userEmail">Email: </label>
+              <input type="email" name="userEmail" ref={ref => this.userEmail = ref} />
+            </div>
+            <div className="fieldset last">
+              <label htmlFor="userPassword">Password: </label>
+              <input type="password" name="userPassword" ref={ref => this.userPassword = ref} />
+            </div>
+  
+            <div>
+              <input type="submit" value='Log In' onSubmit={this.showCreate} />
+            </div>
+          </form>
+        </div>
       </div>
 
       <div className="modal createUserModal" ref={ref => this.createUserModal = ref}>
-          <h2>Create An Account</h2>
-          <a onClick={this.showCreate}><i className="fas fa-times close"></i></a>
-          <form action="" onSubmit = {e => this.createUser.call(this,e)}>
-            <div>
-              <label htmlFor="createEmail">Email: </label>
-              <input type="email" name="createEmail" ref={ref => this.createEmail = ref}/>
+          <div className="wrapper">
+            <div className="layout__spaceBetween">
+              <h2>Create An Account</h2>
+              <a href="#" onClick={this.showCreate}><i className="fas fa-times close"></i></a>
             </div>
-            <div>
-              <label htmlFor="createPassword">Password: </label>
-              <input type="password" name="createPassword" ref={ref => this.createPassword = ref} />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword">Confirm Password: </label>
-              <input type="password" name="confirmPassword" ref={ref => this.confirmPassword = ref} />
-            </div>
-            <div>
-              <input type="submit" value='Create Account' onSubmit={this.createUser}/>
-            </div>
-          </form>
+            <form action="" onSubmit = {e => this.createUser.call(this,e)}>
+              <div className="fieldset">
+                <label htmlFor="createEmail">Email: </label>
+                <input type="email" name="createEmail" ref={ref => this.createEmail = ref}/>
+              </div>
+              <div className="fieldset">
+                <label htmlFor="createPassword">Password: </label>
+                <input type="password" name="createPassword" ref={ref => this.createPassword = ref} />
+              </div>
+              <div className="fieldset last">
+                <label htmlFor="confirmPassword">Confirm Password: </label>
+                <input type="password" name="confirmPassword" ref={ref => this.confirmPassword = ref} />
+              </div>
+              <div>
+                <input type="submit" value='Create Account' onSubmit={this.createUser}/>
+              </div>
+            </form>
+          </div>
       </div>
 
-      <main>
-        {this.showSplash()}
-      </main>
-      
-      {this.state.loggedIn ? <Sidebar data={this.state.articles}/> : null}
+      <div className="mainLayout">
+        <main>
+          {this.showSplash()}
+        </main>
+        
+        {this.state.loggedIn ? <Sidebar data={this.state.articles}/> : null}
 
+      </div>  
       <footer>
         <div className='wrapper'>Created By Linda Zhao using React and Firebase</div>
       </footer>
@@ -160,25 +170,30 @@ class App extends React.Component {
       // console.log('user is logged in')
       return (
         // show input form if user is logged in
-        <div className="wrapper">
-          <div className='inputForm'>
-            <h2>Add An Article</h2>
-            <form onSubmit={this.handleSubmit}>
-              <label htmlFor="urlInput">URL: </label>
-              <input name="urlInput" onChange={this.handleChange} type="url" id="urlInput" value={this.state.urlInput} required />
-
-              <label htmlFor="titleInput">Title: </label>
-              <input name="titleInput" onChange={this.handleChange} type="text" id="titleInput" value={this.state.titleInput} />
-
-              <label htmlFor="tagsInput">Tags: </label>
-              <input name="tagsInput" onChange={this.handleChange} type="text" id="tagsInput" value={this.state.tagsInput} />
-
-              <input onClick={this.handleSubmit} type="submit" value="hit it!" />
-            </form>
-            {this.showReadingList()}
-
-          </div>
-        </div>
+          <section className='inputForm'>
+              <div className="wrapper">
+                <h2>Add An Article</h2>
+                <form onSubmit={this.handleSubmit}>
+                  <div className="fieldset">
+                    <label htmlFor="urlInput">URL: </label>
+                    <input name="urlInput" onChange={this.handleChange} type="url" id="urlInput" value={this.state.urlInput} required />
+                  </div>
+  
+                  <div className="fieldset">
+                    <label htmlFor="titleInput">Title: </label>
+                    <input name="titleInput" onChange={this.handleChange} type="text" id="titleInput" value={this.state.titleInput} />
+                  </div>
+    
+                  <div className="fieldset last">
+                    <label htmlFor="tagsInput">Tags: </label>
+                    <input name="tagsInput" onChange={this.handleChange} type="text" id="tagsInput" value={this.state.tagsInput} />
+                  </div>
+    
+                  <input onClick={this.handleSubmit} type="submit" value="hit it!" className="btn__submit"/>
+                </form>
+              </div>
+              {this.showReadingList()}
+          </section>
       );
     } else {
       console.log('user is NOT logged in, show splash');
@@ -239,7 +254,6 @@ class App extends React.Component {
   showLogin(e) {
     e.preventDefault();
     this.loginModal.classList.toggle('show');
-    // loginUser(e);
   }
 
   loginUser(e) {
@@ -368,8 +382,7 @@ class App extends React.Component {
     for (let tag in article.tags) {
       tagsArr.push(tag);
     }
-
-    return tagsArr.map((tag, i) => {
+    tagsArr.map((tag, i) => {
       // console.log(tag)
       return <span className="tagName" key={i}>{tag}</span>;
     })
@@ -381,39 +394,33 @@ class ReadingList extends React.Component {
   render() {
     return (
       <ul className="readingList">
-        <h2>Reading List</h2>
-        {/* iterate with map to show all articles */}
-        {this.props.data.map((article) => {
-          // console.log(Array.from(article.tags));
-          return <li className="articleItem" key={article.key}>
-            <div className="articleItem__buttons">
-              <button className="btn--toggle" onClick={() => this.props.toggleSaved(article)}><i className="fas fa-star"></i></button>
-              <button className="btn--toggle" onClick={() => this.props.toggleCompleted(article)}><i className="fas fa-check"></i></button>
-            </div>
-
-            <div className="title__box">
-              <a className="title__article" href={article.url}>{article.title}</a>
-              <p className="tagBox">{article.tags ? this.props.getTagKeys(article) : "no tags"}</p>
-            </div>
-            <a href="" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove
-            </a>
-            {article.saved ? <i className="fas fa-star saved"></i> : null }
-            
-          </li>;
-        })}
+        <div className="wrapper">
+          <h2>Reading List</h2>
+          {/* iterate with map to show all articles */}
+          {this.props.data.map((article) => {
+            // console.log(Array.from(article.tags));
+            return <li className="articleItem" key={article.key}>
+              <div className="articleItem__buttons">
+                <button className="btn--toggle" onClick={() => this.props.toggleSaved(article)}><i className="fas fa-star"></i></button>
+                <button className="btn--toggle" onClick={() => this.props.toggleCompleted(article)}><i className="fas fa-check"></i></button>
+              </div>
+  
+              <div className="title__box">
+                <a className="title__article" href={article.url}>{article.title}</a>
+                <p className="tagBox">{article.tags ? this.props.getTagKeys(article) : "no tags"}</p>
+              </div>
+              <a href="" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove
+              </a>
+              {article.saved ? <i className="fas fa-star saved"></i> : null }
+              
+            </li>;
+          })}
+        </div>
       </ul>
     )
   }
 }
-// const Tag = (articles) => {
-//   return (
-//     console.log(articles)
-//     {for (let article in articles) {
-//       console.log(article);
-//     }}
-//   )
 
-// }
 class Sidebar extends React.Component {
   constructor(props) {
     super(props);
@@ -426,8 +433,10 @@ class Sidebar extends React.Component {
     return (
       <aside>
         <div className="wrapper">
-          <h2>Tag List</h2>          
-          {this.findTagName()}
+          <h2>Tag List</h2>   
+          {this.findTagName().map((tag, i)=> {
+            return (<p className="aTag" key={i}>{tag}</p>)
+          })}
         </div>
       </aside>
     )
@@ -443,17 +452,21 @@ class Sidebar extends React.Component {
       }
     })
 
-    console.log(allTags)
-    return <p className="tagBox">{allTags}</p>
+    return allTags;
   }
 }
 
 
-// ? Not rendering
 const SplashPage = () => {
   return (
     <div className="splashScreen">
+     <div className="wrapper">
       <h2>Save blog posts you want to read for later with Pocky!</h2>
+      
+      <img src="./../../assets/website_vector_market.svg" alt="Website SVG" className="graphics"/>
+      
+      <h2>Log In to try it out!</h2>
+     </div> 
     </div>
   )
 }

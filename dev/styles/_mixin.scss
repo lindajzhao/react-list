@@ -11,3 +11,9 @@
     color: $color;
     font-weight: $weight;
 }
+
+@mixin sectionBorder() {
+    border-top: 5px solid $color-main;
+    border-left: 5px solid $color-main;
+    border-right: 5px solid $color-main;
+}
