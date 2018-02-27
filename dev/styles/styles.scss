@@ -1,7 +1,7 @@
 @import "normalize";
 @import "variables";
-@import "mixin";
 @import "typography";
+@import "mixin";
 
 
 /*----------------------------------------
@@ -102,7 +102,7 @@ aside {
 
 }
 main, aside {
-    border-bottom: 5px solid $color-main;
+    border-bottom:  $border;
 }
 /*----------------------------------------
   Splash
@@ -160,7 +160,7 @@ form {
 }
 
 label {
-    border-right: 5px solid $color-main;
+    border-right:  $border;
     padding: 5px 10px;
     min-width: 170px;
 }
@@ -177,13 +177,8 @@ input[type="submit"] {
 /*----------------------------------------
     new note form (.inputForm)
 ----------------------------------------*/
-.inputForm {
-    // padding-bottom: 50px;
-
-}
-
 .last {
-    border-bottom: 5px solid $color-main;
+    border-bottom:  $border;
 }
 
 .loginModal, .createUserModal, {
@@ -203,14 +198,14 @@ input[type="submit"] {
 
 .modal {
     padding: 50px 0;
-    border: 3px solid $color-main;
+    border:  $border;
 }
 /*----------------------------------------
     .readingList
 ----------------------------------------*/
 .readingList {
     margin: 50px 0;
-    border-top: 5px solid $color-main;
+    border-top: $border;
     padding-top: 50px;
 }
 
@@ -238,6 +233,8 @@ input[type="submit"] {
         "title complete"
         "tags star";
     width: 100%;
+    border: $border;
+    padding-left: 10px;
 
     @media (max-width: $break-med) {
         grid-auto-columns: 5fr 1fr;

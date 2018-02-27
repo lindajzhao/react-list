@@ -1,5 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import SplashPage from './SplashPage';
+import Header from './Header';
+import Footer from './Footer';
+import Sidebar from './Sidebar';
+import ReadingList from './ReadingList';
 
 // Initialize Firebase
 var config = {
@@ -83,21 +88,8 @@ class App extends React.Component {
     // console.log(this.state.articles)
     return (
     <div>
-      <header className="mainHeader">
-        <h1>Pocky</h1>
-        <nav>
-          {this.state.loggedIn ? 
-          <span>
-            <span>Logged In</span>
-            <a href="#" className="link--nav link--btn" onClick={this.signOut}>Sign Out</a>
-          </span>
-          : <span>
-            <a href="#" className="link--nav link--btn" onClick={this.showLogin}>Log In</a> 
-            <a href="#" className="link--nav link--btn" onClick={this.showCreate}>Create Account</a>
-          </span> 
-          }
-        </nav>
-      </header>
+      <Header loggedIn={this.state.loggedIn} signOut={this.signOut} showLogin={this.showLogin} showCreate={this.showCreate}/>
+
 
     
       <div className="modal loginModal" ref={ref => this.loginModal = ref}>
@@ -157,9 +149,7 @@ class App extends React.Component {
         {this.state.loggedIn ? <Sidebar data={this.state.articles}/> : null}
 
       </div>  
-      <footer>
-        <div className='wrapper'>Created By Linda Zhao using React and Firebase</div>
-      </footer>
+      <Footer />
     </div>
     
     );
@@ -385,91 +375,6 @@ class App extends React.Component {
   }
 }
 
-class ReadingList extends React.Component {
-  render() {
-    return (
-      <ul className="readingList">
-        <div className="wrapper">
-          <h2>Reading List</h2>
-          {/* iterate with map to show all articles */}
-          {this.props.data.map((article) => {
-            // console.log(Array.from(article.tags));
-            return (<li className="articleItem" key={article.key}>
-              <div className="articleItemBox">
-                <a className="title__article articleItem--title" href={article.url} target="_blank">{article.title}</a>
 
-                <button className="btn--toggle btn--complete" onClick={(e) => this.props.toggleCompleted(article,e)}><i className="fas fa-check"></i></button>
-
-                {/* <p className="tagBox">{article.tags ? this.props.getTagKeys(article) : "no tags"}</p> */}
-                <p className="tagBox">
-                  {this.props.getTagKeys(article).map((tag) => {
-                    console.log(tag);
-                    return (<span className="tagName">{tag}</span>);
-                  })}
-                </p>
-
-                <button className="btn--toggle btn--save" onClick={(e) => this.props.toggleSaved(article, e)}><i className="fas fa-star"></i></button>
-              </div>
-              <a href="#" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove</a>
-              {/*
-              {article.saved ? <i className="fas fa-star saved"></i> : null }
-               */}
-            </li>);
-          })}
-        </div>
-      </ul>
-    )
-  }
-}
-
-class Sidebar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      articles: this.props.data,
-    }
-    this.findTagName = this.findTagName.bind(this);
-  }
-  render () {
-    return (
-      <aside>
-        <div className="wrapper">
-          <h2>Tag List</h2>   
-          {this.findTagName().map((tag, i)=> {
-            return (<p className="tagBanner" key={i}>{tag}</p>)
-          })}
-        </div>
-      </aside>
-    )
-  }
-
-  findTagName() {
-    const articles = this.state.articles;
-    const allTags =[];
-    articles.map((articleObj) => {
-      // console.log(articleObj.tags);
-      for(let tags in articleObj.tags) {
-        allTags.push(tags)
-      }
-    })
-
-    return allTags;
-  }
-}
-
-
-const SplashPage = () => {
-  return (
-    <div className="splashScreen">
-     <div className="wrapper">
-      <h2>Save blog posts you want to read for later with Pocky!</h2>
-      
-      <img src="./../../assets/website_vector_market.svg" alt="Website SVG" className="graphics"/>
-      
-      <h2>Log In to try it out!</h2>
-     </div> 
-    </div>
-  )
-}
 
 ReactDOM.render(<App />, document.getElementById('app'));
