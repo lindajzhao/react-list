@@ -61,13 +61,21 @@ img {
 ----------------------------------------*/
 .mainLayout {
     display: grid;
+    grid-template-areas: 
+        "main aside";
+    grid-template-rows: 1fr;
     grid-template-columns: 3fr 1fr;
     > * {
-        @include sectionBorder;
         padding-top: 50px;
-        &:last-child {
-            border-left: none;
-        }
+
+    }
+
+    @media (max-width: $break-med) {
+        grid-template-areas: 
+            "main"
+            "aside";
+        // grid-template-rows: 4fr 1fr;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -75,9 +83,25 @@ img {
     display: flex;
     justify-content: space-between;
 }
+main {
+    grid-area: main;
+    @include sectionBorder;
+}
 
+aside {
+    grid-area: aside;
+    @include sectionBorder;
+    border-left: none;
+    padding-bottom: 50px;
+    .wrapper {
+        display: flex;
+        flex-flow: column nowrap;
+        align-content: flex-start;
+        align-items: flex-start;
+    }
+
+}
 main, aside {
-    border-top: 5px solid $color-main;
     border-bottom: 5px solid $color-main;
 }
 /*----------------------------------------
@@ -190,23 +214,6 @@ input[type="submit"] {
     padding-top: 50px;
 }
 
-.articleItem {
-    display: flex;
-    position: relative;
-    align-items: center;
-    margin: 5px 0;
-
-    &.saved {
-        background: rgb(255, 255, 244);
-    }
-
-    &.read {
-        .title__article {
-            color: $text-gray;
-        }
-    }
-
-}
 
 .link__delete {
     position: absolute;
@@ -217,10 +224,33 @@ input[type="submit"] {
     margin: 0 10px;
 }
 /*----------------------------------------
-    all sections
+    article Item
 ----------------------------------------*/
+.articleItem {
+    position: relative;
+    margin-bottom: 40px;
+}
 
+.articleItemBox {
+    display: grid;
+    grid-auto-columns: 9fr 1fr;
+    grid-template-areas: 
+        "title complete"
+        "tags star";
+    width: 100%;
 
+    @media (max-width: $break-med) {
+        grid-auto-columns: 5fr 1fr;
+    }
+}
+
+.saved {
+    background: $color-ac2;
+}
+
+.complete {
+    background: $color-ac1;
+}
 
 
 /*----------------------------------------
@@ -230,7 +260,6 @@ input[type="submit"] {
 button {
     border: none;
     background: $light-gray;
-    border-radius: 50%;
     padding: 5px;
 
     &.saved {
@@ -240,4 +269,14 @@ button {
     &.read {
         background: $color-ac1;
     }
+}
+
+.tagBanner {
+    padding: 5px 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.6rem;
+    background: $color-main;
+    color: white;
 }

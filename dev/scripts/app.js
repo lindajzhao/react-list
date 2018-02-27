@@ -326,19 +326,17 @@ class App extends React.Component {
   }
 
   // change "saved" of entry object to be true
-  toggleSaved(articleToUpdate){
-    // console.log(currKey)
+  toggleSaved(articleToUpdate, e){
 
     // TO DO Change saved to true
     const currKey = articleToUpdate.key;
     // use firebase .set() method to change 1 value. changed ref as well to be inside an object
-    // console.log(currKey)
     const dbref = firebase.database().ref(`/users/${this.state.userId}/${currKey}`);
-    // console.log(dbref);
     articleToUpdate.saved = articleToUpdate.saved === true ? false : true;
-    // console.log(articleToUpdate.saved);
-    // don't put .key into firebase
-    // BUG if statement still runs
+    
+    e.currentTarget.classList.toggle('saved');
+
+
     if (articleToUpdate.key) {
       delete articleToUpdate.key;
     }
@@ -347,16 +345,16 @@ class App extends React.Component {
 
   }
 
-  toggleCompleted(articleToUpdate) {
-    console.log('clicked toggle completed');
+  toggleCompleted(articleToUpdate,e) {
     const currKey = articleToUpdate.key;
 
     const dbref = firebase.database().ref(`/users/${this.state.userId}/${currKey}`);
     // console.log(dbref);
     articleToUpdate.completed = articleToUpdate.completed === true ? false : true;
 
+    e.currentTarget.classList.toggle('complete');
+    
     if (articleToUpdate.key) {
-      console.log("deleting key");
       delete articleToUpdate.key;
     }
     delete articleToUpdate.key;
@@ -378,14 +376,11 @@ class App extends React.Component {
 
   getTagKeys(article) {
     const tagsArr = [];
-
+    // console.log(article)
     for (let tag in article.tags) {
       tagsArr.push(tag);
     }
-    tagsArr.map((tag, i) => {
-      // console.log(tag)
-      return <span className="tagName" key={i}>{tag}</span>;
-    })
+    return tagsArr;
 
   }
 }
@@ -399,21 +394,27 @@ class ReadingList extends React.Component {
           {/* iterate with map to show all articles */}
           {this.props.data.map((article) => {
             // console.log(Array.from(article.tags));
-            return <li className="articleItem" key={article.key}>
-              <div className="articleItem__buttons">
-                <button className="btn--toggle" onClick={() => this.props.toggleSaved(article)}><i className="fas fa-star"></i></button>
-                <button className="btn--toggle" onClick={() => this.props.toggleCompleted(article)}><i className="fas fa-check"></i></button>
+            return (<li className="articleItem" key={article.key}>
+              <div className="articleItemBox">
+                <a className="title__article articleItem--title" href={article.url} target="_blank">{article.title}</a>
+
+                <button className="btn--toggle btn--complete" onClick={(e) => this.props.toggleCompleted(article,e)}><i className="fas fa-check"></i></button>
+
+                {/* <p className="tagBox">{article.tags ? this.props.getTagKeys(article) : "no tags"}</p> */}
+                <p className="tagBox">
+                  {this.props.getTagKeys(article).map((tag) => {
+                    console.log(tag);
+                    return (<span className="tagName">{tag}</span>);
+                  })}
+                </p>
+
+                <button className="btn--toggle btn--save" onClick={(e) => this.props.toggleSaved(article, e)}><i className="fas fa-star"></i></button>
               </div>
-  
-              <div className="title__box">
-                <a className="title__article" href={article.url}>{article.title}</a>
-                <p className="tagBox">{article.tags ? this.props.getTagKeys(article) : "no tags"}</p>
-              </div>
-              <a href="" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove
-              </a>
+              <a href="#" className="link__delete link__secondary" onClick={() => this.props.removeArticle(article.key)}>Remove</a>
+              {/*
               {article.saved ? <i className="fas fa-star saved"></i> : null }
-              
-            </li>;
+               */}
+            </li>);
           })}
         </div>
       </ul>
@@ -435,7 +436,7 @@ class Sidebar extends React.Component {
         <div className="wrapper">
           <h2>Tag List</h2>   
           {this.findTagName().map((tag, i)=> {
-            return (<p className="aTag" key={i}>{tag}</p>)
+            return (<p className="tagBanner" key={i}>{tag}</p>)
           })}
         </div>
       </aside>
