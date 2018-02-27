@@ -16,7 +16,6 @@
     } 
 }
 
-
 .visuallyHidden {
     border: 0;
     clip: rect(0 0 0 0);
@@ -56,6 +55,7 @@ img {
     color: white;
     margin-bottom: 50px;
 }
+
 /*----------------------------------------
   Layout
 ----------------------------------------*/
@@ -83,6 +83,7 @@ img {
     display: flex;
     justify-content: space-between;
 }
+
 main {
     grid-area: main;
     @include sectionBorder;
@@ -102,6 +103,10 @@ aside {
 
 }
 main, aside {
+    border-bottom:  $border;
+}
+
+.last {
     border-bottom:  $border;
 }
 /*----------------------------------------
@@ -177,9 +182,7 @@ input[type="submit"] {
 /*----------------------------------------
     new note form (.inputForm)
 ----------------------------------------*/
-.last {
-    border-bottom:  $border;
-}
+
 
 .loginModal, .createUserModal, {
     display: none;
@@ -241,6 +244,7 @@ input[type="submit"] {
     }
 }
 
+// classes for checked star button and read button
 .saved {
     background: $color-ac2;
 }
@@ -251,7 +255,7 @@ input[type="submit"] {
 
 
 /*----------------------------------------
-    all sections
+    components
 ----------------------------------------*/
 
 button {
