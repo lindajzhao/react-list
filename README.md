@@ -1,5 +1,5 @@
-# Getting Started
-
-1. `git clone` this repo
-2. `npm install`
-3. enjoy!
+# Pockey
+- Save articles you want to read for later!
+- Built in ReactJS
+- responsive web app
+- work in progress
